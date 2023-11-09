@@ -14,8 +14,6 @@
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 use std::collections::HashMap;
 
 // A structure to store the goal details of a team.
@@ -39,6 +37,16 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+
+        let mut insert_score = |team: String, scored: u8, conceded: u8| {
+            let default = Team { goals_conceded: 0, goals_scored: 0 };
+            let score = scores.entry(team).or_insert(default);
+            score.goals_scored += scored;
+            score.goals_conceded += conceded;
+        };
+
+        insert_score(team_1_name, team_1_score, team_2_score);
+        insert_score(team_2_name, team_2_score, team_1_score);
     }
     scores
 }
@@ -48,11 +56,12 @@ mod tests {
     use super::*;
 
     fn get_results() -> String {
-        let results = "".to_string()
-            + "England,France,4,2\n"
-            + "France,Italy,3,1\n"
-            + "Poland,Spain,2,0\n"
-            + "Germany,England,2,1\n";
+        let results =
+            "".to_string() +
+            "England,France,4,2\n" +
+            "France,Italy,3,1\n" +
+            "Poland,Spain,2,0\n" +
+            "Germany,England,2,1\n";
         results
     }
 
@@ -62,10 +71,7 @@ mod tests {
 
         let mut keys: Vec<&String> = scores.keys().collect();
         keys.sort();
-        assert_eq!(
-            keys,
-            vec!["England", "France", "Germany", "Italy", "Poland", "Spain"]
-        );
+        assert_eq!(keys, vec!["England", "France", "Germany", "Italy", "Poland", "Spain"]);
     }
 
     #[test]
